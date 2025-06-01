@@ -13,184 +13,112 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { AsosVesselCard } from "@/components/asos-vessel-card"
 import { RecentlyViewedSection } from "@/components/recently-viewed-section"
 
-// Mock vessel data - In a real app, this would come from your API
-const mockVessels = [
-  {
-    id: "1",
-    vessel_name: "Ocean Pioneer PSV",
-    vessel_type: "Platform Supply Vessel",
-    location: "Aberdeen, Scotland",
-    daily_rate: 15000,
-    weekly_rate: 98000,
-    monthly_rate: 420000,
-    images: ["/images/psv-1.jpg", "/images/psv-1-2.jpg"],
-    specifications: {
-      length: 76,
-      crew_capacity: 28,
-      tonnage: 3200,
-      year_built: 2018,
-      deck_space: 650,
-      fuel_capacity: 1200
-    },
-    availability_status: "Available",
-    rating: 4.8,
-    total_reviews: 42,
-    tags: ["DP2", "Offshore", "North Sea"],
-    is_featured: true,
-    features: ["Dynamic Positioning", "ROV Support", "Crane Capability", "Mud Tanks"],
-    description: "Modern PSV with excellent safety record and experienced crew."
-  },
-  {
-    id: "2",
-    vessel_name: "Atlantic Anchor AHTS",
-    vessel_type: "Anchor Handling Tug Supply",
-    location: "Houston, Texas",
-    daily_rate: 22000,
-    weekly_rate: 140000,
-    monthly_rate: 600000,
-    images: ["/images/ahts-1.jpg"],
-    specifications: {
-      length: 89,
-      crew_capacity: 35,
-      tonnage: 4500,
-      year_built: 2020,
-      deck_space: 800
-    },
-    availability_status: "Limited",
-    rating: 4.9,
-    total_reviews: 38,
-    tags: ["DP3", "Heavy Lifting", "Gulf of Mexico"],
-    features: ["Advanced DP System", "Heavy Anchor Handling", "Towing Capability"],
-    description: "High-spec AHTS vessel perfect for demanding offshore operations."
-  },
-  {
-    id: "3",
-    vessel_name: "Nordic Crew Boat",
-    vessel_type: "Crew Transfer Vessel",
-    location: "Stavanger, Norway",
-    daily_rate: 8500,
-    weekly_rate: 52000,
-    monthly_rate: 220000,
-    images: ["/images/crew-1.jpg"],
-    specifications: {
-      length: 42,
-      crew_capacity: 60,
-      tonnage: 450,
-      year_built: 2019
-    },
-    availability_status: "Available",
-    rating: 4.6,
-    total_reviews: 29,
-    tags: ["High Speed", "Passenger", "North Sea"],
-    features: ["High Speed Transfer", "Weather Protection", "Helipad"],
-    description: "Fast and efficient crew transfer vessel for North Sea operations."
-  },
-  {
-    id: "4",
-    vessel_name: "Deep Sea Constructor",
-    vessel_type: "Construction Support Vessel",
-    location: "Singapore",
-    daily_rate: 35000,
-    weekly_rate: 230000,
-    monthly_rate: 980000,
-    images: ["/images/csv-1.jpg"],
-    specifications: {
-      length: 145,
-      crew_capacity: 120,
-      tonnage: 12000,
-      year_built: 2017,
-      deck_space: 2400
-    },
-    availability_status: "Available",
-    rating: 4.9,
-    total_reviews: 56,
-    tags: ["DP3", "Heavy Lift", "Construction"],
-    is_featured: true,
-    discount_percentage: 15,
-    features: ["Heavy Lift Crane", "ROV Support", "Diving Support", "Large Deck"],
-    description: "Specialized construction vessel for complex offshore projects."
-  },
-  {
-    id: "5",
-    vessel_name: "Wind Farm Support",
-    vessel_type: "Wind Farm Support Vessel",
-    location: "Amsterdam, Netherlands",
-    daily_rate: 18000,
-    weekly_rate: 115000,
-    monthly_rate: 490000,
-    images: ["/images/wfsv-1.jpg"],
-    specifications: {
-      length: 78,
-      crew_capacity: 40,
-      tonnage: 3800,
-      year_built: 2021
-    },
-    availability_status: "Available",
-    rating: 4.7,
-    total_reviews: 23,
-    tags: ["DP2", "Wind Farm", "Green Energy"],
-    features: ["Offshore Wind Support", "Walk-to-Work", "DP System"],
-    description: "Modern vessel designed specifically for offshore wind operations."
-  },
-  {
-    id: "6",
-    vessel_name: "Subsea Explorer",
-    vessel_type: "Dive Support Vessel",
-    location: "Rio de Janeiro, Brazil",
-    daily_rate: 28000,
-    weekly_rate: 180000,
-    monthly_rate: 770000,
-    images: ["/images/dsv-1.jpg"],
-    specifications: {
-      length: 95,
-      crew_capacity: 80,
-      tonnage: 5200,
-      year_built: 2016
-    },
-    availability_status: "Available",
-    rating: 4.8,
-    total_reviews: 44,
-    tags: ["DP3", "Saturation Diving", "ROV"],
-    features: ["Saturation Diving", "ROV Operations", "Hyperbaric Chamber"],
-    description: "Advanced dive support vessel for deep water operations."
+interface Vessel {
+  id: string
+  vessel_name: string
+  vessel_type: string
+  location: string
+  daily_rate?: number
+  weekly_rate?: number
+  monthly_rate?: number
+  images?: string[]
+  specifications?: {
+    length?: number
+    crew_capacity?: number
+    tonnage?: number
+    year_built?: number
+    deck_space?: number
+    fuel_capacity?: number
   }
-]
+  availability_status?: string
+  rating?: number
+  total_reviews?: number
+  tags?: string[]
+  is_featured?: boolean
+  discount_percentage?: number
+  features?: string[]
+  description?: string
+}
 
-const vesselTypes = [
-  "Platform Supply Vessel",
-  "Anchor Handling Tug Supply", 
-  "Crew Transfer Vessel",
-  "Construction Support Vessel",
-  "Wind Farm Support Vessel",
-  "Dive Support Vessel"
-]
+// API client
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || ''
 
-const locations = [
-  "Aberdeen, Scotland",
-  "Houston, Texas", 
-  "Stavanger, Norway",
-  "Singapore",
-  "Amsterdam, Netherlands",
-  "Rio de Janeiro, Brazil"
-]
+const apiClient = {
+  async getVessels(filters: any = {}) {
+    const params = new URLSearchParams()
+    
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
+        if (Array.isArray(filters[key])) {
+          params.append(key, filters[key].join(','))
+        } else {
+          params.append(key, filters[key].toString())
+        }
+      }
+    })
+    
+    const response = await fetch(`${API_BASE_URL}/api/vessels?${params.toString()}`)
+    if (!response.ok) {
+      throw new Error('Failed to fetch vessels')
+    }
+    return await response.json()
+  },
 
-const features = [
-  "Dynamic Positioning",
-  "ROV Support", 
-  "Crane Capability",
-  "Heavy Lifting",
-  "High Speed",
-  "Weather Protection",
-  "Diving Support"
-]
+  async getVesselTypes() {
+    const response = await fetch(`${API_BASE_URL}/api/vessels/types/list`)
+    if (!response.ok) {
+      throw new Error('Failed to fetch vessel types')
+    }
+    const data = await response.json()
+    return data.vessel_types || []
+  },
+
+  async getLocations() {
+    const response = await fetch(`${API_BASE_URL}/api/vessels/locations/list`)
+    if (!response.ok) {
+      throw new Error('Failed to fetch locations')
+    }
+    const data = await response.json()
+    return data.locations || []
+  },
+
+  async getFeatures() {
+    const response = await fetch(`${API_BASE_URL}/api/vessels/features/list`)
+    if (!response.ok) {
+      throw new Error('Failed to fetch features')
+    }
+    const data = await response.json()
+    return data.features || []
+  },
+
+  async seedVessels() {
+    const response = await fetch(`${API_BASE_URL}/api/vessels/seed`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    if (!response.ok) {
+      throw new Error('Failed to seed vessels')
+    }
+    return await response.json()
+  }
+}
 
 export function AsosMarketplace() {
-  const [vessels, setVessels] = useState(mockVessels)
-  const [filteredVessels, setFilteredVessels] = useState(mockVessels)
+  const [vessels, setVessels] = useState<Vessel[]>([])
+  const [filteredVessels, setFilteredVessels] = useState<Vessel[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [sortBy, setSortBy] = useState("featured")
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
+  
+  // Available options from API
+  const [vesselTypes, setVesselTypes] = useState<string[]>([])
+  const [locations, setLocations] = useState<string[]>([])
+  const [features, setFeatures] = useState<string[]>([])
   
   // Filter states
   const [selectedTypes, setSelectedTypes] = useState<string[]>([])
@@ -200,84 +128,87 @@ export function AsosMarketplace() {
   const [yearRange, setYearRange] = useState([2010, 2024])
   const [availabilityFilter, setAvailabilityFilter] = useState("")
 
-  // Apply filters
+  // Load initial data
   useEffect(() => {
-    let filtered = vessels
-
-    // Search filter
-    if (searchQuery) {
-      filtered = filtered.filter(vessel =>
-        vessel.vessel_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        vessel.vessel_type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        vessel.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        vessel.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-      )
+    const loadInitialData = async () => {
+      try {
+        setLoading(true)
+        
+        // Fetch vessel types, locations, and features in parallel
+        const [vesselTypesData, locationsData, featuresData] = await Promise.all([
+          apiClient.getVesselTypes(),
+          apiClient.getLocations(),
+          apiClient.getFeatures()
+        ])
+        
+        setVesselTypes(vesselTypesData)
+        setLocations(locationsData)
+        setFeatures(featuresData)
+        
+        // If no data exists, seed the database
+        if (vesselTypesData.length === 0) {
+          console.log('No vessels found, seeding database...')
+          await apiClient.seedVessels()
+          
+          // Refetch data after seeding
+          const [newVesselTypesData, newLocationsData, newFeaturesData] = await Promise.all([
+            apiClient.getVesselTypes(),
+            apiClient.getLocations(),
+            apiClient.getFeatures()
+          ])
+          
+          setVesselTypes(newVesselTypesData)
+          setLocations(newLocationsData)
+          setFeatures(newFeaturesData)
+        }
+        
+        // Load vessels
+        await loadVessels()
+        
+      } catch (err) {
+        console.error('Error loading initial data:', err)
+        setError('Failed to load marketplace data')
+      } finally {
+        setLoading(false)
+      }
     }
+    
+    loadInitialData()
+  }, [])
 
-    // Type filter
-    if (selectedTypes.length > 0) {
-      filtered = filtered.filter(vessel => selectedTypes.includes(vessel.vessel_type))
+  // Load vessels with current filters
+  const loadVessels = async () => {
+    try {
+      const filters: any = {
+        sort_by: sortBy
+      }
+      
+      if (searchQuery) filters.search = searchQuery
+      if (selectedTypes.length > 0) filters.vessel_type = selectedTypes[0] // API expects single type
+      if (selectedLocations.length > 0) filters.location = selectedLocations[0] // API expects single location
+      if (selectedFeatures.length > 0) filters.features = selectedFeatures
+      if (priceRange[0] > 0) filters.min_daily_rate = priceRange[0]
+      if (priceRange[1] < 50000) filters.max_daily_rate = priceRange[1]
+      if (yearRange[0] > 2010) filters.min_year_built = yearRange[0]
+      if (yearRange[1] < 2024) filters.max_year_built = yearRange[1]
+      if (availabilityFilter) filters.availability_status = availabilityFilter
+      
+      const vesselsData = await apiClient.getVessels(filters)
+      setVessels(vesselsData)
+      setFilteredVessels(vesselsData)
+      
+    } catch (err) {
+      console.error('Error loading vessels:', err)
+      setError('Failed to load vessels')
     }
+  }
 
-    // Location filter
-    if (selectedLocations.length > 0) {
-      filtered = filtered.filter(vessel => selectedLocations.includes(vessel.location))
+  // Reload vessels when filters change
+  useEffect(() => {
+    if (!loading) {
+      loadVessels()
     }
-
-    // Features filter
-    if (selectedFeatures.length > 0) {
-      filtered = filtered.filter(vessel =>
-        vessel.features?.some(feature => selectedFeatures.includes(feature))
-      )
-    }
-
-    // Price filter
-    if (priceRange[0] > 0 || priceRange[1] < 50000) {
-      filtered = filtered.filter(vessel =>
-        vessel.daily_rate &&
-        vessel.daily_rate >= priceRange[0] &&
-        vessel.daily_rate <= priceRange[1]
-      )
-    }
-
-    // Year filter
-    if (yearRange[0] > 2010 || yearRange[1] < 2024) {
-      filtered = filtered.filter(vessel =>
-        vessel.specifications?.year_built &&
-        vessel.specifications.year_built >= yearRange[0] &&
-        vessel.specifications.year_built <= yearRange[1]
-      )
-    }
-
-    // Availability filter
-    if (availabilityFilter) {
-      filtered = filtered.filter(vessel => vessel.availability_status === availabilityFilter)
-    }
-
-    // Apply sorting
-    switch (sortBy) {
-      case "price-low":
-        filtered.sort((a, b) => (a.daily_rate || 0) - (b.daily_rate || 0))
-        break
-      case "price-high":
-        filtered.sort((a, b) => (b.daily_rate || 0) - (a.daily_rate || 0))
-        break
-      case "rating":
-        filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0))
-        break
-      case "newest":
-        filtered.sort((a, b) => (b.specifications?.year_built || 0) - (a.specifications?.year_built || 0))
-        break
-      default: // featured
-        filtered.sort((a, b) => {
-          if (a.is_featured && !b.is_featured) return -1
-          if (!a.is_featured && b.is_featured) return 1
-          return (b.rating || 0) - (a.rating || 0)
-        })
-    }
-
-    setFilteredVessels(filtered)
-  }, [vessels, searchQuery, selectedTypes, selectedLocations, selectedFeatures, priceRange, yearRange, availabilityFilter, sortBy])
+  }, [searchQuery, selectedTypes, selectedLocations, selectedFeatures, priceRange, yearRange, availabilityFilter, sortBy])
 
   const clearAllFilters = () => {
     setSelectedTypes([])
@@ -287,6 +218,31 @@ export function AsosMarketplace() {
     setYearRange([2010, 2024])
     setAvailabilityFilter("")
     setSearchQuery("")
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading vessels...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 text-xl mb-4">⚠️ Error</div>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()}>
+            Retry
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   const FilterSection = () => (
