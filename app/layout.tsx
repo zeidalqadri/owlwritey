@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { CartProvider } from "@/contexts/CartContext"
 import { WishlistProvider } from "@/contexts/WishlistContext"
 import { RecentlyViewedProvider } from "@/contexts/RecentlyViewedContext"
-import { cn } from "@/lib/utils"
+import { MobileBottomNav } from "@/components/mobile-bottom-nav"
 
 const inter = Inter({
   subsets: ["latin"],
