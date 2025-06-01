@@ -5,87 +5,123 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArrowRight, TrendingUp, Clock, Star, Ship, Anchor, Users, MapPin, Eye, ShoppingBag, Heart } from "lucide-react"
 import { AsosVesselCard } from "@/components/asos-vessel-card"
+import { useEffect, useState } from "react"
 
-// Mock featured vessels for ASOS-style showcase
-const featuredVessels = [
-  {
-    id: "1",
-    vessel_name: "Ocean Pioneer PSV",
-    vessel_type: "Platform Supply Vessel",
-    location: "Aberdeen, Scotland",
-    daily_rate: 15000,
-    weekly_rate: 98000,
-    monthly_rate: 420000,
-    images: ["https://images.unsplash.com/photo-1568347877321-f8935c7dc5a3"],
-    specifications: {
-      length: 76,
-      crew_capacity: 28,
-      tonnage: 3200,
-      year_built: 2018
-    },
-    availability_status: "Available",
-    rating: 4.8,
-    total_reviews: 42,
-    tags: ["DP2", "Offshore", "North Sea"],
-    is_featured: true,
-    discount_percentage: 15
-  },
-  {
-    id: "2",
-    vessel_name: "Atlantic Anchor AHTS",
-    vessel_type: "Anchor Handling Tug Supply",
-    location: "Houston, Texas",
-    daily_rate: 22000,
-    images: ["https://images.unsplash.com/photo-1609337231803-2adad48ea1d1"],
-    specifications: {
-      length: 89,
-      crew_capacity: 35,
-      year_built: 2020
-    },
-    availability_status: "Limited",
-    rating: 4.9,
-    total_reviews: 38,
-    tags: ["DP3", "Heavy Lifting"]
-  },
-  {
-    id: "3",
-    vessel_name: "Nordic Crew Boat",
-    vessel_type: "Crew Transfer Vessel",
-    location: "Stavanger, Norway",
-    daily_rate: 8500,
-    images: ["https://images.unsplash.com/photo-1601311852860-1d8f42381551"],
-    specifications: {
-      length: 42,
-      crew_capacity: 60,
-      year_built: 2019
-    },
-    availability_status: "Available",
-    rating: 4.6,
-    total_reviews: 29
-  },
-  {
-    id: "4",
-    vessel_name: "Deep Sea Constructor",
-    vessel_type: "Construction Support Vessel",
-    location: "Singapore",
-    daily_rate: 35000,
-    images: ["https://images.unsplash.com/photo-1568347877321-f8935c7dc5a3"],
-    specifications: {
-      length: 145,
-      crew_capacity: 120,
-      year_built: 2017
-    },
-    availability_status: "Available",
-    rating: 4.9,
-    total_reviews: 56,
-    is_featured: true
+interface Vessel {
+  id: string
+  vessel_name: string
+  vessel_type: string
+  location: string
+  daily_rate?: number
+  weekly_rate?: number
+  monthly_rate?: number
+  images?: string[]
+  specifications?: {
+    length?: number
+    crew_capacity?: number
+    tonnage?: number
+    year_built?: number
   }
-]
+  availability_status?: string
+  rating?: number
+  total_reviews?: number
+  tags?: string[]
+  is_featured?: boolean
+  discount_percentage?: number
+  features?: string[]
+  description?: string
+}
 
-const newArrivals = featuredVessels.slice(0, 2)
-const onSale = featuredVessels.filter(v => v.discount_percentage)
+// API client
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || ''
 
-export default function HomePage() {
+const apiClient = {
+  async getFeaturedVessels() {
+    const response = await fetch(`${API_BASE_URL}/api/vessels?is_featured=true&limit=4`)
+    if (!response.ok) {
+      throw new Error('Failed to fetch featured vessels')
+    }
+    return await response.json()
+  },
+
+  async getNewArrivals() {
+    const response = await fetch(`${API_BASE_URL}/api/vessels?sort_by=newest&limit=2`)
+    if (!response.ok) {
+      throw new Error('Failed to fetch new arrivals')
+    }
+    return await response.json()
+  },
+
+  async getVesselsOnSale() {
+    // For now, just get featured vessels with discount
+    const response = await fetch(`${API_BASE_URL}/api/vessels?is_featured=true&limit=10`)
+    if (!response.ok) {
+      throw new Error('Failed to fetch vessels on sale')
+    }
+    const vessels = await response.json()
+    return vessels.filter((v: Vessel) => v.discount_percentage && v.discount_percentage > 0)
+  },
+
+  async seedVessels() {
+    const response = await fetch(`${API_BASE_URL}/api/vessels/seed`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    if (!response.ok) {
+      throw new Error('Failed to seed vessels')
+    }
+    return await response.json()
+  }
+}
+
+export function AsosHome() {
+  const [featuredVessels, setFeaturedVessels] = useState<Vessel[]>([])
+  const [newArrivals, setNewArrivals] = useState<Vessel[]>([])
+  const [onSale, setOnSale] = useState<Vessel[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadHomeData = async () => {
+      try {
+        setLoading(true)
+        
+        // Try to fetch data
+        let featured = await apiClient.getFeaturedVessels()
+        
+        // If no data exists, seed the database
+        if (featured.length === 0) {
+          console.log('No vessels found, seeding database...')
+          await apiClient.seedVessels()
+          
+          // Retry fetching data after seeding
+          featured = await apiClient.getFeaturedVessels()
+        }
+        
+        const [newArrivalsData, onSaleData] = await Promise.all([
+          apiClient.getNewArrivals(),
+          apiClient.getVesselsOnSale()
+        ])
+        
+        setFeaturedVessels(featured)
+        setNewArrivals(newArrivalsData)
+        setOnSale(onSaleData)
+        
+      } catch (error) {
+        console.error('Error loading home data:', error)
+        // Set empty arrays as fallback
+        setFeaturedVessels([])
+        setNewArrivals([])
+        setOnSale([])
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    loadHomeData()
+  }, [])
+
   return (
     <div className="flex-1">
       {/* Hero Section - ASOS Style */}
@@ -177,25 +213,42 @@ export default function HomePage() {
             </Button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {newArrivals.map((vessel) => (
-              <AsosVesselCard key={vessel.id} vessel={vessel} />
-            ))}
-            
-            {/* New Arrivals CTA Card */}
-            <Card className="border-2 border-dashed border-gray-300 hover:border-accent transition-colors cursor-pointer">
-              <CardContent className="flex flex-col items-center justify-center h-full p-8 text-center">
-                <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4">
-                  <Eye className="h-6 w-6 text-accent" />
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="bg-gray-300 h-48 rounded-lg mb-4"></div>
+                  <div className="h-4 bg-gray-300 rounded mb-2"></div>
+                  <div className="h-4 bg-gray-300 rounded w-3/4"></div>
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">See All New Vessels</h3>
-                <p className="text-sm text-gray-600 mb-4">Discover the latest additions to our fleet</p>
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/marketplace?sort=newest">Browse All</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {newArrivals.slice(0, 2).map((vessel) => (
+                <AsosVesselCard key={vessel.id} vessel={vessel} />
+              ))}
+              
+              {/* New Arrivals CTA Card */}
+              <Card className="border-2 border-dashed border-gray-300 hover:border-accent transition-colors cursor-pointer">
+                <CardContent className="flex flex-col items-center justify-center h-full p-8 text-center">
+                  <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4">
+                    <Eye className="h-6 w-6 text-accent" />
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-2">See All New Vessels</h3>
+                  <p className="text-sm text-gray-600 mb-4">Discover the latest additions to our fleet</p>
+                  <Button asChild variant="outline" size="sm">
+                    <Link href="/marketplace?sort_by=newest">Browse All</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+              
+              {/* Fill remaining slots if we have more featured vessels */}
+              {featuredVessels.slice(0, 1).map((vessel) => (
+                <AsosVesselCard key={`featured-${vessel.id}`} vessel={vessel} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -222,7 +275,7 @@ export default function HomePage() {
               return (
                 <Link
                   key={category.name}
-                  href={`/marketplace?type=${category.name}`}
+                  href={`/marketplace?vessel_type=${encodeURIComponent(category.fullName)}`}
                   className="group"
                 >
                   <Card className="border-0 shadow-sm hover:shadow-md transition-all duration-300 group-hover:scale-105">
@@ -258,23 +311,41 @@ export default function HomePage() {
               </Badge>
             </div>
             <Button asChild variant="outline">
-              <Link href="/marketplace?featured=true">
+              <Link href="/marketplace?is_featured=true">
                 View All Deals
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {onSale.map((vessel) => (
-              <AsosVesselCard key={vessel.id} vessel={vessel} />
-            ))}
-            
-            {/* More deals placeholder cards */}
-            {featuredVessels.slice(0, 2).map((vessel) => (
-              <AsosVesselCard key={`featured-${vessel.id}`} vessel={vessel} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="bg-gray-300 h-48 rounded-lg mb-4"></div>
+                  <div className="h-4 bg-gray-300 rounded mb-2"></div>
+                  <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {onSale.length > 0 ? (
+                onSale.slice(0, 2).map((vessel) => (
+                  <AsosVesselCard key={vessel.id} vessel={vessel} />
+                ))
+              ) : (
+                featuredVessels.slice(0, 2).map((vessel) => (
+                  <AsosVesselCard key={vessel.id} vessel={vessel} />
+                ))
+              )}
+              
+              {/* Fill with featured vessels if available */}
+              {featuredVessels.slice(2, 4).map((vessel) => (
+                <AsosVesselCard key={`featured-deals-${vessel.id}`} vessel={vessel} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -294,21 +365,21 @@ export default function HomePage() {
               <div className="text-3xl font-bold mb-2">AHTS Vessels</div>
               <p className="text-gray-200 mb-4">High demand for anchor handling operations in the North Sea</p>
               <Button asChild variant="secondary" size="sm">
-                <Link href="/marketplace?type=AHTS">Shop AHTS</Link>
+                <Link href="/marketplace?vessel_type=Anchor Handling Tug Supply">Shop AHTS</Link>
               </Button>
             </div>
             <div>
               <div className="text-3xl font-bold mb-2">Wind Farm Support</div>
               <p className="text-gray-200 mb-4">Growing demand for offshore wind installation vessels</p>
               <Button asChild variant="secondary" size="sm">
-                <Link href="/marketplace?type=Wind">Shop Wind Support</Link>
+                <Link href="/marketplace?vessel_type=Wind Farm Support Vessel">Shop Wind Support</Link>
               </Button>
             </div>
             <div>
               <div className="text-3xl font-bold mb-2">Fast Crew Transfer</div>
               <p className="text-gray-200 mb-4">High-speed crew boats for efficient personnel transport</p>
               <Button asChild variant="secondary" size="sm">
-                <Link href="/marketplace?type=Crew">Shop Crew Boats</Link>
+                <Link href="/marketplace?vessel_type=Crew Transfer Vessel">Shop Crew Boats</Link>
               </Button>
             </div>
           </div>
