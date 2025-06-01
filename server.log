@@ -9,3 +9,168 @@
 
  ✓ Starting...
  ✓ Ready in 2.9s
+ ○ Compiling / ...
+ ⨯ ./components/asos-home.tsx
+Error:   [31mx[0m You're importing a component that needs `useEffect`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
+  [31m|[0m 
+  [31m|[0m  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  [31m|[0m 
+  [31m|[0m 
+    ,-[[36;1;4m/app/components/asos-home.tsx[0m:8:1]
+ [2m 5[0m | import { Card, CardContent } from "@/components/ui/card"
+ [2m 6[0m | import { ArrowRight, TrendingUp, Clock, Star, Ship, Anchor, Users, MapPin, Eye, ShoppingBag, Heart } from "lucide-react"
+ [2m 7[0m | import { AsosVesselCard } from "@/components/asos-vessel-card"
+ [2m 8[0m | import { useEffect, useState } from "react"
+    : [35;1m         ^^^^^^^^^[0m
+ [2m 9[0m | 
+ [2m10[0m | interface Vessel {
+ [2m11[0m |   id: string
+    `----
+  [31mx[0m You're importing a component that needs `useState`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
+  [31m|[0m 
+  [31m|[0m  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  [31m|[0m 
+  [31m|[0m 
+    ,-[[36;1;4m/app/components/asos-home.tsx[0m:8:1]
+ [2m 5[0m | import { Card, CardContent } from "@/components/ui/card"
+ [2m 6[0m | import { ArrowRight, TrendingUp, Clock, Star, Ship, Anchor, Users, MapPin, Eye, ShoppingBag, Heart } from "lucide-react"
+ [2m 7[0m | import { AsosVesselCard } from "@/components/asos-vessel-card"
+ [2m 8[0m | import { useEffect, useState } from "react"
+    : [35;1m                    ^^^^^^^^[0m
+ [2m 9[0m | 
+ [2m10[0m | interface Vessel {
+ [2m11[0m |   id: string
+    `----
+
+Import trace for requested module:
+./components/asos-home.tsx
+./app/page.tsx
+ ⨯ ./components/asos-home.tsx
+Error:   [31mx[0m You're importing a component that needs `useEffect`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
+  [31m|[0m 
+  [31m|[0m  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  [31m|[0m 
+  [31m|[0m 
+    ,-[[36;1;4m/app/components/asos-home.tsx[0m:8:1]
+ [2m 5[0m | import { Card, CardContent } from "@/components/ui/card"
+ [2m 6[0m | import { ArrowRight, TrendingUp, Clock, Star, Ship, Anchor, Users, MapPin, Eye, ShoppingBag, Heart } from "lucide-react"
+ [2m 7[0m | import { AsosVesselCard } from "@/components/asos-vessel-card"
+ [2m 8[0m | import { useEffect, useState } from "react"
+    : [35;1m         ^^^^^^^^^[0m
+ [2m 9[0m | 
+ [2m10[0m | interface Vessel {
+ [2m11[0m |   id: string
+    `----
+  [31mx[0m You're importing a component that needs `useState`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
+  [31m|[0m 
+  [31m|[0m  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  [31m|[0m 
+  [31m|[0m 
+    ,-[[36;1;4m/app/components/asos-home.tsx[0m:8:1]
+ [2m 5[0m | import { Card, CardContent } from "@/components/ui/card"
+ [2m 6[0m | import { ArrowRight, TrendingUp, Clock, Star, Ship, Anchor, Users, MapPin, Eye, ShoppingBag, Heart } from "lucide-react"
+ [2m 7[0m | import { AsosVesselCard } from "@/components/asos-vessel-card"
+ [2m 8[0m | import { useEffect, useState } from "react"
+    : [35;1m                    ^^^^^^^^[0m
+ [2m 9[0m | 
+ [2m10[0m | interface Vessel {
+ [2m11[0m |   id: string
+    `----
+
+Import trace for requested module:
+./components/asos-home.tsx
+./app/page.tsx
+ ✓ Compiled /_not-found in 2.4s (465 modules)
+ ✓ Compiled in 5s (465 modules)
+ ○ Compiling /_error ...
+ ⨯ ./components/asos-home.tsx
+Error:   [31mx[0m You're importing a component that needs `useEffect`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
+  [31m|[0m 
+  [31m|[0m  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  [31m|[0m 
+  [31m|[0m 
+    ,-[[36;1;4m/app/components/asos-home.tsx[0m:8:1]
+ [2m 5[0m | import { Card, CardContent } from "@/components/ui/card"
+ [2m 6[0m | import { ArrowRight, TrendingUp, Clock, Star, Ship, Anchor, Users, MapPin, Eye, ShoppingBag, Heart } from "lucide-react"
+ [2m 7[0m | import { AsosVesselCard } from "@/components/asos-vessel-card"
+ [2m 8[0m | import { useEffect, useState } from "react"
+    : [35;1m         ^^^^^^^^^[0m
+ [2m 9[0m | 
+ [2m10[0m | interface Vessel {
+ [2m11[0m |   id: string
+    `----
+  [31mx[0m You're importing a component that needs `useState`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
+  [31m|[0m 
+  [31m|[0m  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  [31m|[0m 
+  [31m|[0m 
+    ,-[[36;1;4m/app/components/asos-home.tsx[0m:8:1]
+ [2m 5[0m | import { Card, CardContent } from "@/components/ui/card"
+ [2m 6[0m | import { ArrowRight, TrendingUp, Clock, Star, Ship, Anchor, Users, MapPin, Eye, ShoppingBag, Heart } from "lucide-react"
+ [2m 7[0m | import { AsosVesselCard } from "@/components/asos-vessel-card"
+ [2m 8[0m | import { useEffect, useState } from "react"
+    : [35;1m                    ^^^^^^^^[0m
+ [2m 9[0m | 
+ [2m10[0m | interface Vessel {
+ [2m11[0m |   id: string
+    `----
+
+Import trace for requested module:
+./components/asos-home.tsx
+./app/page.tsx
+ GET / 500 in 54878ms
+ ✓ Compiled /_error in 915ms (707 modules)
+ ✓ Compiled in 686ms (707 modules)
+ ✓ Compiled in 745ms (707 modules)
+ ✓ Compiled in 760ms (707 modules)
+ ✓ Compiled in 776ms (707 modules)
+ ✓ Compiled in 759ms (707 modules)
+ ✓ Compiled in 626ms (707 modules)
+ ✓ Compiled in 708ms (707 modules)
+ ✓ Compiled in 758ms (707 modules)
+ ✓ Compiled in 760ms (707 modules)
+ ✓ Compiled in 957ms (707 modules)
+ ✓ Compiled in 1168ms (707 modules)
+ ✓ Compiled in 1048ms (707 modules)
+ ✓ Compiled in 4.5s (1378 modules)
+ ✓ Compiled in 754ms (722 modules)
+ ✓ Compiled in 701ms (722 modules)
+ ✓ Compiled in 718ms (722 modules)
+ ✓ Compiled in 760ms (722 modules)
+ ✓ Compiled in 916ms (722 modules)
+ GET / 200 in 1544ms
+ ✓ Compiled in 2.5s (722 modules)
+ ✓ Compiled in 858ms (722 modules)
+ ✓ Compiled in 951ms (722 modules)
+ ✓ Compiled in 741ms (722 modules)
+ ✓ Compiled in 568ms (722 modules)
+ ✓ Compiled in 676ms (722 modules)
+ ✓ Compiled in 761ms (722 modules)
+ ✓ Compiled in 646ms (722 modules)
+ ✓ Compiled in 603ms (722 modules)
+ ✓ Compiled in 660ms (722 modules)
+ ✓ Compiled in 764ms (722 modules)
+ ✓ Compiled in 758ms (722 modules)
+ ✓ Compiled in 707ms (722 modules)
+ ✓ Compiled in 716ms (722 modules)
+ ✓ Compiled in 749ms (722 modules)
+ ✓ Compiled in 794ms (722 modules)
+ ✓ Compiled in 743ms (722 modules)
+ ✓ Compiled in 828ms (722 modules)
+ ✓ Compiled in 826ms (722 modules)
+ ✓ Compiled in 740ms (722 modules)
+ ✓ Compiled in 1043ms (722 modules)
+ ✓ Compiled in 1468ms (722 modules)
+ ✓ Compiled in 803ms (722 modules)
+ ✓ Compiled in 838ms (722 modules)
+ ✓ Compiled in 740ms (722 modules)
+ ✓ Compiled in 595ms (722 modules)
+ ✓ Compiled in 519ms (722 modules)
+ ✓ Compiled in 725ms (722 modules)
+ ✓ Compiled in 604ms (722 modules)
+ ✓ Compiled in 527ms (722 modules)
+ ✓ Compiled in 704ms (722 modules)
+ ✓ Compiled in 553ms (722 modules)
+ ✓ Compiled in 533ms (722 modules)
+ ✓ Compiled in 649ms (722 modules)
+ ✓ Compiled in 591ms (722 modules)
