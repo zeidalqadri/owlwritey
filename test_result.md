@@ -136,8 +136,8 @@ backend:
         comment: "Status Check API endpoints are working correctly. POST /api/status creates a new status check and GET /api/status retrieves the list of status checks. MongoDB integration is working properly."
 
   - task: "Vessel API Endpoints"
-    implemented: false
-    working: "NA"
+    implemented: true
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
@@ -149,6 +149,9 @@ backend:
       - working: "NA"
         agent: "testing"
         comment: "Vessel API endpoints need to be implemented to support the marketplace functionality."
+      - working: true
+        agent: "testing"
+        comment: "All vessel API endpoints have been implemented and are working correctly. Successfully tested: 1) Seed data endpoint, 2) Get vessels with filtering, searching, and pagination, 3) Get vessel by ID, 4) Create vessel, 5) Update vessel, 6) Delete vessel, 7) Search suggestions, 8) Get vessel types, 9) Get locations, 10) Get tags, 11) Get features. All endpoints return the expected data and handle various query parameters correctly."
 
   - task: "Shopping Cart API"
     implemented: false
