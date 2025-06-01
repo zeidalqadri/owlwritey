@@ -236,6 +236,7 @@ test_plan:
   current_focus:
     - "API Root Endpoint"
     - "Status Check API"
+    - "Vessel API Endpoints"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
