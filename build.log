@@ -1,0 +1,21 @@
+> my-v0-project@0.1.0 build
+> next build
+
+   ▲ Next.js 15.2.4
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+[Error [PageNotFoundError]: Cannot find module for page: /dashboard/bookings] {
+  code: 'ENOENT'
+}
+[Error [PageNotFoundError]: Cannot find module for page: /dashboard/operator] {
+  code: 'ENOENT'
+}
+
+> Build error occurred
+[Error: Failed to collect page data for /dashboard/bookings] {
+  type: 'Error'
+}

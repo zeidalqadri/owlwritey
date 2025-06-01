@@ -1,0 +1,12 @@
+🚢 Testing OSV Marketplace 🚢
+Testing with URL: http://localhost:3000
+
+🔍 Testing Homepage...
+✅ Passed - Status: 200
+✅ Homepage content verified
+
+🔍 Testing Marketplace Page...
+✅ Passed - Status: 200
+✅ Marketplace page content verified
+
+🔍 Testing Vessel Detail Page (ID: 3649cd62-4c87-445f-bfd3-465e928ce17e)...
