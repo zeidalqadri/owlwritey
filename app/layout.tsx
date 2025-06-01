@@ -41,9 +41,10 @@ export default function RootLayout({
               <RecentlyViewedProvider>
                 <div className="flex min-h-screen flex-col">
                   <AsosHeader />
-                  <main className="flex-1">{children}</main>
+                  <main className="flex-1 mb-16 md:mb-0">{children}</main>
                   <SiteFooter />
                   <Toaster />
+                  <MobileBottomNav />
                 </div>
               </RecentlyViewedProvider>
             </WishlistProvider>
