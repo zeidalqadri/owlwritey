@@ -246,3 +246,5 @@ agent_communication:
     message: "Initial testing structure created. Will test the implemented backend API endpoints."
   - agent: "testing"
     message: "Backend testing completed. The API Root Endpoint and Status Check API are working correctly. However, the application is missing several key API endpoints required for the ASOS-inspired maritime marketplace functionality, including Vessel API, Shopping Cart API, Wishlist API, Search and Filter API, and Recently Viewed API. These endpoints need to be implemented to support the requested features."
+  - agent: "testing"
+    message: "Vessel API endpoints have been successfully tested. All 11 endpoints are working correctly, including seed data, get vessels with filtering and search, CRUD operations, and metadata endpoints. The vessel API now fully supports the marketplace functionality with search, filtering, and sorting capabilities."
