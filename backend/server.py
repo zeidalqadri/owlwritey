@@ -36,6 +36,69 @@ class StatusCheck(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
+class VesselSpecifications(BaseModel):
+    length: Optional[float] = None
+    crew_capacity: Optional[int] = None
+    tonnage: Optional[float] = None
+    year_built: Optional[int] = None
+    deck_space: Optional[float] = None
+    fuel_capacity: Optional[float] = None
+
+class Vessel(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    vessel_name: str
+    vessel_type: str
+    location: str
+    daily_rate: Optional[float] = None
+    weekly_rate: Optional[float] = None
+    monthly_rate: Optional[float] = None
+    images: Optional[List[str]] = []
+    specifications: Optional[VesselSpecifications] = None
+    availability_status: Optional[str] = "Available"
+    rating: Optional[float] = None
+    total_reviews: Optional[int] = None
+    tags: Optional[List[str]] = []
+    is_featured: Optional[bool] = False
+    discount_percentage: Optional[float] = None
+    features: Optional[List[str]] = []
+    description: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class VesselCreate(BaseModel):
+    vessel_name: str
+    vessel_type: str
+    location: str
+    daily_rate: Optional[float] = None
+    weekly_rate: Optional[float] = None
+    monthly_rate: Optional[float] = None
+    images: Optional[List[str]] = []
+    specifications: Optional[VesselSpecifications] = None
+    availability_status: Optional[str] = "Available"
+    rating: Optional[float] = None
+    total_reviews: Optional[int] = None
+    tags: Optional[List[str]] = []
+    is_featured: Optional[bool] = False
+    discount_percentage: Optional[float] = None
+    features: Optional[List[str]] = []
+    description: Optional[str] = None
+
+class VesselSearchParams(BaseModel):
+    search: Optional[str] = None
+    vessel_type: Optional[str] = None
+    location: Optional[str] = None
+    min_daily_rate: Optional[float] = None
+    max_daily_rate: Optional[float] = None
+    min_year_built: Optional[int] = None
+    max_year_built: Optional[int] = None
+    availability_status: Optional[str] = None
+    is_featured: Optional[bool] = None
+    tags: Optional[List[str]] = None
+    features: Optional[List[str]] = None
+    sort_by: Optional[str] = "featured"  # featured, price-low, price-high, rating, newest
+    limit: Optional[int] = 50
+    offset: Optional[int] = 0
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
