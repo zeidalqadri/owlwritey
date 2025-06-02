@@ -59,6 +59,71 @@ export function IntelligentSearch() {
   const [isSearching, setIsSearching] = useState(false)
   const [searchResponse, setSearchResponse] = useState<SearchResponse | null>(null)
   const [clarificationAnswers, setClarificationAnswers] = useState<string[]>([])
+  const [currentSearchId, setCurrentSearchId] = useState<string | null>(null)
+
+  // API client for logging searches
+  const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || ''
+
+  const logSearchQuery = async (query: string, pageContext: string = 'unknown') => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/search/log`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: query,
+          query_type: 'natural_language',
+          page_context: pageContext,
+          session_id: localStorage.getItem('session_id') || generateSessionId()
+        })
+      })
+      
+      if (response.ok) {
+        const searchLog = await response.json()
+        return searchLog.id
+      }
+    } catch (error) {
+      console.error('Failed to log search query:', error)
+    }
+    return null
+  }
+
+  const updateSearchResults = async (searchId: string, resultsCount: number, responseTime: number) => {
+    try {
+      await fetch(`${API_BASE_URL}/api/search/log/${searchId}/results?results_count=${resultsCount}&response_time_ms=${responseTime}`, {
+        method: 'PUT'
+      })
+    } catch (error) {
+      console.error('Failed to update search results:', error)
+    }
+  }
+
+  const logSearchClick = async (searchId: string, vesselId: string) => {
+    try {
+      await fetch(`${API_BASE_URL}/api/search/log/${searchId}/click?clicked_vessel_id=${vesselId}`, {
+        method: 'PUT'
+      })
+    } catch (error) {
+      console.error('Failed to log search click:', error)
+    }
+  }
+
+  const generateSessionId = () => {
+    const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+    localStorage.setItem('session_id', sessionId)
+    return sessionId
+  }
+
+  const getPageContext = () => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname
+      if (path === '/') return 'home'
+      if (path.startsWith('/marketplace')) return 'marketplace'
+      return path.replace('/', '') || 'unknown'
+    }
+    return 'unknown'
+  }
   const [searchEngine] = useState(() => new MarimarIntelligentSearch())
 
   const vesselImages = [
