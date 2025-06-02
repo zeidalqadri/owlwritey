@@ -162,11 +162,6 @@ export function AsosHome() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button asChild size="lg" className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-4 text-lg">
-                <Link href="/marketplace/ai-search">
-                  🧠 Try AI Search
-                </Link>
-              </Button>
               <Button asChild variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-primary px-8 py-4 text-lg">
                 <Link href="/marketplace?featured=true">Browse Featured</Link>
               </Button>
