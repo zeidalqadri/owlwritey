@@ -21,7 +21,6 @@ import { useCart } from "@/contexts/CartContext"
 import { useWishlist } from "@/contexts/WishlistContext"
 import { CartSidebar } from "@/components/cart-sidebar"
 import { WishlistSidebar } from "@/components/wishlist-sidebar"
-import { IntelligentSearchModal } from "@/components/intelligent-search-modal"
 
 export function AsosHeader() {
   const pathname = usePathname()
