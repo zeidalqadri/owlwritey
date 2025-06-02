@@ -26,7 +26,6 @@ export function AsosHeader() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
   const { getCartItemCount, toggleCart } = useCart()
   const { getWishlistItemCount, toggleWishlist } = useWishlist()
 
