@@ -99,6 +99,29 @@ class VesselSearchParams(BaseModel):
     limit: Optional[int] = 50
     offset: Optional[int] = 0
 
+class SearchQuery(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    query: str
+    query_type: str = "natural_language"  # natural_language, filtered, keyword
+    user_ip: Optional[str] = None
+    user_agent: Optional[str] = None
+    page_context: Optional[str] = None  # home, marketplace, etc.
+    search_timestamp: datetime = Field(default_factory=datetime.utcnow)
+    response_time_ms: Optional[float] = None
+    results_count: Optional[int] = None
+    clicked_result_ids: Optional[List[str]] = []
+    session_id: Optional[str] = None
+
+class SearchQueryCreate(BaseModel):
+    query: str
+    query_type: str = "natural_language"
+    user_ip: Optional[str] = None
+    user_agent: Optional[str] = None
+    page_context: Optional[str] = None
+    response_time_ms: Optional[float] = None
+    results_count: Optional[int] = None
+    session_id: Optional[str] = None
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
