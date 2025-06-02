@@ -281,14 +281,6 @@ export function AsosHeader() {
       {/* Sidebars */}
       <CartSidebar />
       <WishlistSidebar />
-
-      {/* Intelligent Search Modal */}
-      <IntelligentSearchModal
-        isOpen={isSearchModalOpen}
-        onClose={() => setIsSearchModalOpen(false)}
-        initialQuery={searchQuery}
-        onQueryChange={setSearchQuery}
-      />
     </>
   )
 }
