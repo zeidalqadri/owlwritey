@@ -202,7 +202,7 @@ export function AsosHeader() {
                           placeholder={getContextualPlaceholder()}
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          className="pr-12 h-12 text-base border-2 border-gray-200 focus:border-accent"
+                          className="pr-10"
                         />
                         <Button
                           type="submit"
