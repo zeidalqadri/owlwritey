@@ -24,7 +24,7 @@ import Link from "next/link"
 import Image from "next/image"
 
 // Import our AI search engine
-import MarimarIntelligentSearch from "@/lib/intelligent-search"
+import MarimarIntelligentSearch from "@/lib/intelligent-search.js"
 
 interface SearchResult {
   id: string
