@@ -137,14 +137,29 @@ export function IntelligentSearch() {
 
   const handleSearch = async () => {
     if (!query.trim()) return
-
+    
     setIsSearching(true)
+    const startTime = Date.now()
+    
+    // Log the search query
+    const searchId = await logSearchQuery(query, getPageContext())
+    setCurrentSearchId(searchId)
+    
     try {
       const result = await searchEngine.performIntelligentSearch(query)
+      const endTime = Date.now()
+      const responseTime = endTime - startTime
+      
       setSearchResponse(result)
       if (result.type === 'clarification_needed') {
         setClarificationAnswers(new Array(result.questions?.length || 0).fill(''))
       }
+      
+      // Update search results with count and response time
+      if (searchId && result.type === 'search_results') {
+        await updateSearchResults(searchId, result.results?.length || 0, responseTime)
+      }
+      
     } catch (error) {
       console.error('Search error:', error)
       setSearchResponse({
