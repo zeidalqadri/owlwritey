@@ -202,15 +202,30 @@ export function AsosHeader() {
                           placeholder="Search vessels..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          className="pr-10"
+                          className="pr-20"
                         />
-                        <Button
-                          type="submit"
-                          size="sm"
-                          className="absolute right-1 top-1 h-8"
-                        >
-                          <Search className="h-4 w-4" />
-                        </Button>
+                        <div className="absolute right-1 top-1 flex items-center space-x-1">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => {
+                              window.location.href = '/marketplace/ai-search'
+                              setMobileMenuOpen(false)
+                            }}
+                            className="h-8 px-1 text-xs bg-gradient-to-r from-blue-500 to-purple-500 text-white"
+                            title="AI Search"
+                          >
+                            🧠
+                          </Button>
+                          <Button
+                            type="submit"
+                            size="sm"
+                            className="h-8"
+                          >
+                            <Search className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </form>
 
