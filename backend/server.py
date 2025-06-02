@@ -366,6 +366,104 @@ async def get_features():
             flattened_features.append(feature_list)
     return {"features": list(set(flattened_features))}
 
+# Search logging endpoints
+
+@api_router.post("/search/log", response_model=SearchQuery)
+async def log_search_query(search_query: SearchQueryCreate, request: Request = None):
+    """Log a search query for analytics and UX improvement"""
+    search_dict = search_query.dict()
+    
+    # Add IP address if available and not provided
+    if request and not search_dict.get("user_ip"):
+        search_dict["user_ip"] = request.client.host if request.client else None
+    
+    # Add user agent if available and not provided
+    if request and not search_dict.get("user_agent"):
+        search_dict["user_agent"] = request.headers.get("user-agent")
+    
+    search_obj = SearchQuery(**search_dict)
+    result = await db.search_queries.insert_one(search_obj.dict())
+    return search_obj
+
+@api_router.put("/search/log/{search_id}/results")
+async def update_search_results(search_id: str, results_count: int, response_time_ms: float):
+    """Update search query with results count and response time"""
+    result = await db.search_queries.update_one(
+        {"id": search_id},
+        {"$set": {
+            "results_count": results_count,
+            "response_time_ms": response_time_ms,
+            "updated_at": datetime.utcnow()
+        }}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Search query not found")
+    
+    return {"message": "Search results updated successfully"}
+
+@api_router.put("/search/log/{search_id}/click")
+async def log_search_click(search_id: str, clicked_vessel_id: str):
+    """Log when a user clicks on a search result"""
+    result = await db.search_queries.update_one(
+        {"id": search_id},
+        {"$push": {"clicked_result_ids": clicked_vessel_id}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Search query not found")
+    
+    return {"message": "Click logged successfully"}
+
+@api_router.get("/search/analytics")
+async def get_search_analytics(
+    start_date: Optional[str] = Query(None, description="Start date (YYYY-MM-DD)"),
+    end_date: Optional[str] = Query(None, description="End date (YYYY-MM-DD)"),
+    limit: Optional[int] = Query(100, description="Number of queries to return")
+):
+    """Get search analytics for UX improvement"""
+    
+    # Build date filter
+    date_filter = {}
+    if start_date:
+        date_filter["$gte"] = datetime.fromisoformat(start_date)
+    if end_date:
+        date_filter["$lte"] = datetime.fromisoformat(end_date)
+    
+    query = {}
+    if date_filter:
+        query["search_timestamp"] = date_filter
+    
+    # Get search queries
+    searches = await db.search_queries.find(query).sort("search_timestamp", -1).limit(limit).to_list(limit)
+    
+    # Calculate analytics
+    total_searches = len(searches)
+    avg_response_time = sum(s.get("response_time_ms", 0) for s in searches if s.get("response_time_ms")) / max(1, len([s for s in searches if s.get("response_time_ms")]))
+    
+    # Most common queries
+    query_counts = {}
+    for search in searches:
+        query = search.get("query", "").lower().strip()
+        if query:
+            query_counts[query] = query_counts.get(query, 0) + 1
+    
+    most_common_queries = sorted(query_counts.items(), key=lambda x: x[1], reverse=True)[:10]
+    
+    # Page context analytics
+    page_contexts = {}
+    for search in searches:
+        context = search.get("page_context", "unknown")
+        page_contexts[context] = page_contexts.get(context, 0) + 1
+    
+    return {
+        "total_searches": total_searches,
+        "avg_response_time_ms": avg_response_time,
+        "most_common_queries": most_common_queries,
+        "page_contexts": page_contexts,
+        "recent_searches": searches[:20]  # Last 20 searches
+    }
+
 # Seed data endpoint for development
 @api_router.post("/vessels/seed")
 async def seed_vessels():
