@@ -86,21 +86,36 @@ export function AsosHeader() {
             {/* Search Bar - Desktop */}
             <div className="hidden md:flex flex-1 max-w-2xl mx-8">
               <form onSubmit={handleSearch} className="flex w-full">
-                <div className="relative flex-1">
+                <div className="relative">
                   <Input
                     type="text"
                     placeholder="Search vessels, locations, specifications..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pr-12 h-12 text-base border-2 border-gray-200 focus:border-accent"
+                    className="pr-24 h-12 text-base border-2 border-gray-200 focus:border-accent"
                   />
-                  <Button
-                    type="submit"
-                    size="sm"
-                    className="absolute right-1 top-1 h-10 bg-accent hover:bg-accent-dark"
-                  >
-                    <Search className="h-4 w-4" />
-                  </Button>
+                  <div className="absolute right-1 top-1 flex items-center space-x-1">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        // Navigate to AI search page
+                        window.location.href = '/marketplace/ai-search'
+                      }}
+                      className="h-10 px-2 text-xs bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600"
+                      title="AI-Powered Search"
+                    >
+                      🧠 AI
+                    </Button>
+                    <Button
+                      type="submit"
+                      size="sm"
+                      className="h-10 bg-accent hover:bg-accent-dark"
+                    >
+                      <Search className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </form>
             </div>
