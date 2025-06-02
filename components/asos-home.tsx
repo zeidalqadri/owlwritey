@@ -162,9 +162,6 @@ export function AsosHome() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-primary px-8 py-4 text-lg">
-                <Link href="/marketplace?featured=true">Browse Featured</Link>
-              </Button>
             </div>
           </div>
         </div>
