@@ -21,11 +21,13 @@ import { useCart } from "@/contexts/CartContext"
 import { useWishlist } from "@/contexts/WishlistContext"
 import { CartSidebar } from "@/components/cart-sidebar"
 import { WishlistSidebar } from "@/components/wishlist-sidebar"
+import { IntelligentSearchModal } from "@/components/intelligent-search-modal"
 
 export function AsosHeader() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
   const { getCartItemCount, toggleCart } = useCart()
   const { getWishlistItemCount, toggleWishlist } = useWishlist()
 
@@ -37,11 +39,24 @@ export function AsosHeader() {
     return null
   }
 
+  const getContextualPlaceholder = () => {
+    if (pathname === "/") {
+      return "Find your perfect vessel - try 'PSV for North Sea drilling' or 'AHTS with 100T bollard pull'"
+    } else if (pathname.startsWith("/marketplace")) {
+      if (pathname.includes("ai-search")) {
+        return "Describe your operation - 'Need crew boat for 30 passengers Malaysia' or 'Emergency PSV DP2 available'"
+      } else {
+        return "Search vessels - try 'AHTS Gulf of Mexico' or 'Wind farm support vessel Netherlands'"
+      }
+    }
+    return "Search vessels, locations, specifications..."
+  }
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchQuery.trim()) {
-      // Navigate to marketplace with search query
-      window.location.href = `/marketplace?search=${encodeURIComponent(searchQuery)}`
+      // Open intelligent search modal instead of navigating
+      setIsSearchModalOpen(true)
     }
   }
 
