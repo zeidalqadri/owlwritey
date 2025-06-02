@@ -53,8 +53,8 @@ export function AsosHeader() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchQuery.trim()) {
-      // Open intelligent search modal instead of navigating
-      setIsSearchModalOpen(true)
+      // Navigate to marketplace with search query
+      window.location.href = `/marketplace?search=${encodeURIComponent(searchQuery)}`
     }
   }
 
