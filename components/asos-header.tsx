@@ -207,7 +207,7 @@ export function AsosHeader() {
                         <Button
                           type="submit"
                           size="sm"
-                          className="absolute right-1 top-1 h-10 bg-accent hover:bg-accent-dark"
+                          className="absolute right-1 top-1 h-8"
                         >
                           <Search className="h-4 w-4" />
                         </Button>
