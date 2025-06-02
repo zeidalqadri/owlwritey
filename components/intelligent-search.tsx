@@ -353,7 +353,16 @@ export function IntelligentSearch() {
                 const imageUrl = vesselImages[index % vesselImages.length]
                 
                 return (
-                  <Link key={vessel.id} href={`/marketplace/${vessel.id}`}>
+                  <Link 
+                    key={vessel.id} 
+                    href={`/marketplace/${vessel.id}`}
+                    onClick={async () => {
+                      // Log vessel click if we have a search ID
+                      if (currentSearchId && vessel.id) {
+                        await logSearchClick(currentSearchId, vessel.id)
+                      }
+                    }}
+                  >
                     <Card className="group cursor-pointer overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300">
                       <div className="relative h-48 overflow-hidden">
                         <Image
