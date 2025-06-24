@@ -1,0 +1,58 @@
+{
+  "manifest_version": 3,
+  "name": "WhatsApp Web Voice-Note Transcriber",
+  "version": "1.0.0",
+  "description": "Privacy-first Chrome extension that transcribes WhatsApp Web voice messages locally using Whisper AI",
+  
+  "permissions": [
+    "storage",
+    "notifications",
+    "activeTab"
+  ],
+  
+  "host_permissions": [
+    "https://web.whatsapp.com/*"
+  ],
+  
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "WhatsApp Voice Transcriber",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "32": "assets/icons/icon32.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
+    }
+  },
+  
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["whisper-worker.js", "assets/*"],
+      "matches": ["https://web.whatsapp.com/*"]
+    }
+  ],
+  
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  }
+} 
